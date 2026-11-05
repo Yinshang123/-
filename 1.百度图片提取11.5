@@ -1,0 +1,51 @@
+# 提取图片
+# import bs4
+# import requests
+# result = requests.get("图片地址")
+# soup = bs4.BeautifulSoup(result.text, "lxml")
+# image = soup.select("img.thumbimage")
+# print(image[0]["src"])  # 提取图片地址
+# print(image[0]["class"])  # 提取图片class
+# print(image[0]["alt"])  # 提取图片alt
+# print(image[0]["width"])
+# # 做个git
+# result = requests.get("http:// +src地址")
+# print(result)
+# print(result.content)  # 提取图片内容
+# with open("图片名.jpg", "wb") as f:
+#     f.write(result.content)
+
+
+# 页面练习，指定页面抓取第一章缩略图
+# 先看页面有什么，再写选择器
+# 先打印前几个img 的 class和src，看看真实结构
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://www.baidu.com"
+headers = {"User-Agent": "Mozilla/5.0"}
+
+response = requests.get(url, headers=headers)
+soup = BeautifulSoup(response.text, "lxml")
+
+for img in soup.select("img")[:3]:
+    print(img.get("src"))  # 成功获取src
+    # //www.baidu.com/img/flexible/logo/pc/index.png
+
+src = "//www.baidu.com/img/flexible/logo/pc/index.png"
+# 选图片标签
+image = soup.select("img")
+print("find the:", len(image))
+
+if src.startswith("//"):
+    src = "https:" + src
+
+img_result = requests.get(src, headers=headers)
+print(img_result)  # <Response [200]>
+print(img_result.content[:20])  # 图片二进制前二十字节
+
+# 保存下来
+with open("baidu_image.png", "wb") as f:
+    f.write(img_result.content)
+print("find it")
+
